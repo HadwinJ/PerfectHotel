@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using PerfectHotel.Web.Models;
 
 namespace PerfectHotel.Web.Data
 {
@@ -12,5 +13,7 @@ namespace PerfectHotel.Web.Data
             : base(options)
         {
         }
+
+        public DbSet<Player> Players { get; set; }
     }
 }

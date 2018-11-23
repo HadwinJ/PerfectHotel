@@ -15,5 +15,7 @@ namespace PerfectHotel.Web.Data
         }
 
         public DbSet<Player> Players { get; set; }
+
+        public DbSet<Student> Students { get; set; }
     }
 }

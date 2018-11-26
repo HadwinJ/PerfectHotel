@@ -13,8 +13,9 @@ namespace PerfectHotel.Web.Services
 
         public DefaultTenantProvider(IHttpContextAccessor httpContextAccessor)
         {
-            var host = httpContextAccessor.HttpContext.Request.Host.Host;
-            _tenantId = host == "localhost" ? "101" : "102";
+            //            var host = httpContextAccessor.HttpContext.Request.Host.Host;
+            //            _tenantId = host == "localhost" ? "101" : "102";
+            _tenantId = "101";
         }
         public string GetTenantId()
         {

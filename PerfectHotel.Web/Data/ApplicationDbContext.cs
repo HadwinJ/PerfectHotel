@@ -39,11 +39,11 @@ namespace PerfectHotel.Web.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {            
-            foreach (var entityType in _entityTypeProvider.GetEntityTypes())
-            {
-                var method = SetGlobalQueryMethod.MakeGenericMethod(entityType);
-                method.Invoke(this, new object[] {builder});
-            }
+//            foreach (var entityType in _entityTypeProvider.GetEntityTypes())
+//            {
+//                var method = SetGlobalQueryMethod.MakeGenericMethod(entityType);
+//                method.Invoke(this, new object[] {builder});
+//            }
 
             base.OnModelCreating(builder);
         }

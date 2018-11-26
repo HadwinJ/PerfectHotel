@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace PerfectHotel.Web.Models
 {
-    public class Student
+    public class Student : BaseEntity
     {
-        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
     }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PerfectHotel.Web.Data;
 using PerfectHotel.Web.Models;
+using PerfectHotel.Web.Repositories;
 
 namespace PerfectHotel.Web.ApiControllers
 {
@@ -12,18 +13,18 @@ namespace PerfectHotel.Web.ApiControllers
     [ApiController]
     public class StudentsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IStudentRepository _studentRepository;
 
-        public StudentsController(ApplicationDbContext context)
+        public StudentsController(IStudentRepository studentRepository)
         {
-            _context = context;
+            _studentRepository = studentRepository;
         }
 
         // GET: api/Students
         [HttpGet]
-        public IEnumerable<Student> GetStudents()
+        public async Task<IEnumerable<Student>> GetStudents()
         {
-            return _context.Students;
+            return await _studentRepository.FindAllAsync();
         }
 
         // GET: api/Students/5
@@ -35,7 +36,7 @@ namespace PerfectHotel.Web.ApiControllers
                 return BadRequest(ModelState);
             }
 
-            var student = await _context.Students.FindAsync(id);
+            var student = await _studentRepository.FindByIdAsync(id);
 
             if (student == null)
             {
@@ -59,15 +60,15 @@ namespace PerfectHotel.Web.ApiControllers
                 return BadRequest();
             }
 
-            _context.Entry(student).State = EntityState.Modified;
+            _studentRepository.Update(student);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _studentRepository.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StudentExists(id))
+                if (!(await StudentExists(id)))
                 {
                     return NotFound();
                 }
@@ -89,8 +90,8 @@ namespace PerfectHotel.Web.ApiControllers
                 return BadRequest(ModelState);
             }
 
-            _context.Students.Add(student);
-            await _context.SaveChangesAsync();
+            _studentRepository.Create(student);
+            await _studentRepository.SaveChangesAsync();
 
             return CreatedAtAction("GetStudent", new { id = student.Id }, student);
         }
@@ -104,21 +105,22 @@ namespace PerfectHotel.Web.ApiControllers
                 return BadRequest(ModelState);
             }
 
-            var student = await _context.Students.FindAsync(id);
+            var student = await _studentRepository.FindByIdAsync(id);
             if (student == null)
             {
                 return NotFound();
             }
 
-            _context.Students.Remove(student);
-            await _context.SaveChangesAsync();
+            _studentRepository.Delete(student);
+            await _studentRepository.SaveChangesAsync();
 
             return Ok(student);
         }
 
-        private bool StudentExists(int id)
+        private async Task<bool> StudentExists(int id)
         {
-            return Queryable.Any<Student>(_context.Students, e => e.Id == id);
+            var student = await _studentRepository.FindByIdAsync(id);
+            return (student != null);
         }
     }
 }

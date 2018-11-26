@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PerfectHotel.Web.Models;
 
@@ -26,6 +27,13 @@ namespace PerfectHotel.Web.Controllers
         {
             ViewData["Message"] = "Your contact page.";
 
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult NeedAuthentication()
+        {
+            ViewData["Message"] = "This page need authentication.";
             return View();
         }
 

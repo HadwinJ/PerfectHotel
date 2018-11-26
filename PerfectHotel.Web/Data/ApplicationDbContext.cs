@@ -4,6 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PerfectHotel.Web.Data.Migrations;
@@ -17,12 +20,15 @@ namespace PerfectHotel.Web.Data
     {
         private readonly string _tenantId;
         private readonly IEntityTypeProvider _entityTypeProvider;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options,
             ITenantProvider tenantProvider,
-            IEntityTypeProvider entityTypeProvider)
+            IEntityTypeProvider entityTypeProvider,
+            IHttpContextAccessor httpContextAccessor)
             : base(options)
         {
+            _httpContextAccessor = httpContextAccessor;
             _entityTypeProvider = entityTypeProvider;
             _tenantId = tenantProvider.GetTenantId();
         }
@@ -32,7 +38,7 @@ namespace PerfectHotel.Web.Data
         public DbSet<Student> Students { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
-        {
+        {            
             foreach (var entityType in _entityTypeProvider.GetEntityTypes())
             {
                 var method = SetGlobalQueryMethod.MakeGenericMethod(entityType);
@@ -46,10 +52,28 @@ namespace PerfectHotel.Web.Data
             .GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Single(t => t.IsGenericMethod && t.Name == "SetGlobalQuery");
 
+        
         public void SetGlobalQuery<T>(ModelBuilder builder) where T : BaseEntity
         {
             builder.Entity<T>().HasKey(e => e.Id);
             builder.Entity<T>().HasQueryFilter(e => e.TenantId == _tenantId && !e.IsDeleted);
+        }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            OnBeforeSaving();
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }        
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
+        {
+            OnBeforeSaving();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        private void OnBeforeSaving()
+        {
+            var test = _httpContextAccessor.HttpContext.User;
         }
     }
 }

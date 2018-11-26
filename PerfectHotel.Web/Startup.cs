@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PerfectHotel.Web.Models;
 using PerfectHotel.Web.Repositories;
+using PerfectHotel.Web.Services;
 
 namespace PerfectHotel.Web
 {
@@ -43,6 +44,9 @@ namespace PerfectHotel.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<IStudentRepository, StudentRepository>();
+
+            services.AddScoped<IEntityTypeProvider, DefaultEntityTypeProvider>();
+            services.AddScoped<ITenantProvider, DefaultTenantProvider>();
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PerfectHotel.Web.Data;
 
 namespace PerfectHotel.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181126060850_ApplicationUser")]
+    partial class ApplicationUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,11 +168,9 @@ namespace PerfectHotel.Web.Data.Migrations
 
                     b.Property<string>("SecurityStamp");
 
-                    b.Property<string>("TenantId")
-                        .HasMaxLength(10);
+                    b.Property<string>("TenantId");
 
-                    b.Property<string>("TenantName")
-                        .HasMaxLength(32);
+                    b.Property<string>("TenantName");
 
                     b.Property<bool>("TwoFactorEnabled");
 

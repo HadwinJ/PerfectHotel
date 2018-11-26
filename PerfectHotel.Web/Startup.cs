@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using PerfectHotel.Web.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PerfectHotel.Web.Models;
 using PerfectHotel.Web.Repositories;
 
 namespace PerfectHotel.Web
@@ -38,7 +39,7 @@ namespace PerfectHotel.Web
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddDefaultIdentity<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<IStudentRepository, StudentRepository>();

@@ -41,8 +41,11 @@ namespace PerfectHotel.Web.Data
         {            
             foreach (var entityType in _entityTypeProvider.GetEntityTypes())
             {
-                var method = SetGlobalQueryMethod.MakeGenericMethod(entityType);
-                method.Invoke(this, new object[] {builder});
+                var setGlobalQueryMethod = SetGlobalQueryMethod.MakeGenericMethod(entityType);
+                setGlobalQueryMethod.Invoke(this, new object[] {builder});
+
+                var addTrackingPropertiesMethod = AddTrackingPropertiesMethod.MakeGenericMethod(entityType);
+                addTrackingPropertiesMethod.Invoke(this, new object[] { builder });
             }
 
             base.OnModelCreating(builder);
@@ -59,6 +62,18 @@ namespace PerfectHotel.Web.Data
             builder.Entity<T>().HasQueryFilter(e => e.TenantId == _tenantId && !e.IsDeleted);
         }
 
+        public readonly MethodInfo AddTrackingPropertiesMethod = typeof(ApplicationDbContext)
+            .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Single(t => t.IsGenericMethod && t.Name == "AddTrackingProperties");
+
+        public void AddTrackingProperties<T>(ModelBuilder builder) where T : BaseEntity
+        {
+            builder.Entity<T>().Property(t => t.CreatedAt).HasField("_createdAt");
+            builder.Entity<T>().Property(t => t.CreatedBy).HasField("_createdBy");
+            builder.Entity<T>().Property(t => t.LastUpdatedAt).HasField("_lastUpdatedAt");
+            builder.Entity<T>().Property(t => t.LastUpdatedBy).HasField("_lastUpdatedBy");
+        }
+
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
             OnBeforeSaving();
@@ -73,7 +88,30 @@ namespace PerfectHotel.Web.Data
 
         private void OnBeforeSaving()
         {
-            var test = _httpContextAccessor.HttpContext.User;
+            var userName = _httpContextAccessor.HttpContext.User.Identity.Name;
+            var entries = ChangeTracker.Entries();
+            foreach (var entry in entries)
+            {
+                if (entry.Entity.GetType().IsSubclassOf(typeof(BaseEntity)))
+                {
+                    var now = DateTime.UtcNow;
+                    switch (entry.State)
+                    {
+                        case EntityState.Modified:
+                            entry.CurrentValues["LastUpdatedAt"] = now;
+                            entry.CurrentValues["LastUpdatedBy"] = userName;
+                            break;
+                        case EntityState.Added:
+                            entry.CurrentValues["CreatedAt"] = now;
+                            entry.CurrentValues["CreatedBy"] = userName;
+                            entry.CurrentValues["LastUpdatedAt"] = now;
+                            entry.CurrentValues["LastUpdatedBy"] = userName;
+                            break;
+                        default:
+                            break;
+                    }
+                }                
+            }
         }
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PerfectHotel.Web.Data;
 
 namespace PerfectHotel.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181126104332_Add_CreatedAt")]
+    partial class Add_CreatedAt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,19 +198,13 @@ namespace PerfectHotel.Web.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("CreatedAt");
-
-                    b.Property<string>("CreatedBy");
+                    b.Property<DateTime>("CreatedAt");
 
                     b.Property<string>("FirstName");
 
                     b.Property<bool>("IsDeleted");
 
                     b.Property<string>("LastName");
-
-                    b.Property<DateTime?>("LastUpdatedAt");
-
-                    b.Property<string>("LastUpdatedBy");
 
                     b.Property<string>("TenantId")
                         .HasMaxLength(10);
@@ -224,19 +220,13 @@ namespace PerfectHotel.Web.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("CreatedAt");
-
-                    b.Property<string>("CreatedBy");
+                    b.Property<DateTime>("CreatedAt");
 
                     b.Property<string>("FirstName");
 
                     b.Property<bool>("IsDeleted");
 
                     b.Property<string>("LastName");
-
-                    b.Property<DateTime?>("LastUpdatedAt");
-
-                    b.Property<string>("LastUpdatedBy");
 
                     b.Property<string>("TenantId")
                         .HasMaxLength(10);
@@ -252,19 +242,13 @@ namespace PerfectHotel.Web.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("CreatedAt");
-
-                    b.Property<string>("CreatedBy");
+                    b.Property<DateTime>("CreatedAt");
 
                     b.Property<string>("FirstName");
 
                     b.Property<bool>("IsDeleted");
 
                     b.Property<string>("LastName");
-
-                    b.Property<DateTime?>("LastUpdatedAt");
-
-                    b.Property<string>("LastUpdatedBy");
 
                     b.Property<string>("TenantId")
                         .HasMaxLength(10);

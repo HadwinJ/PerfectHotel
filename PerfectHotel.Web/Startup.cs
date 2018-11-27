@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using PerfectHotel.Web.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PerfectHotel.Web.Extensions;
 using PerfectHotel.Web.Models;
 using PerfectHotel.Web.Repositories;
 using PerfectHotel.Web.Services;
@@ -46,6 +47,8 @@ namespace PerfectHotel.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<IStudentRepository, StudentRepository>();
+            // services.AddScoped<IPlayerRepository, PlayerRepository>();
+            services.ConfigureRepositoryWrapper();
 
             services.AddScoped<IEntityTypeProvider, DefaultEntityTypeProvider>();
             services.AddScoped<ITenantProvider, DefaultTenantProvider>();

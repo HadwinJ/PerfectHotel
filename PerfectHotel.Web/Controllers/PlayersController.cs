@@ -7,22 +7,23 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PerfectHotel.Web.Data;
 using PerfectHotel.Web.Models;
+using PerfectHotel.Web.Repositories;
 
 namespace PerfectHotel.Web.Controllers
 {
     public class PlayersController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IRepositoryWrapper _repositoryWrapper;
 
-        public PlayersController(ApplicationDbContext context)
+        public PlayersController(IRepositoryWrapper repoWrapper)
         {
-            _context = context;
+            _repositoryWrapper = repoWrapper;            
         }
 
         // GET: Players
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Players.ToListAsync());
+            return View(await _repositoryWrapper.Players.FindAllAsync());
         }
 
         // GET: Players/Details/5
@@ -33,8 +34,8 @@ namespace PerfectHotel.Web.Controllers
                 return NotFound();
             }
 
-            var player = await _context.Players
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var players = await _repositoryWrapper.Players.FindByConditionAync(p => p.Id == id.Value);
+            var player = players.FirstOrDefault();
             if (player == null)
             {
                 return NotFound();
@@ -58,8 +59,8 @@ namespace PerfectHotel.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(player);
-                await _context.SaveChangesAsync();
+                _repositoryWrapper.Players.Create(player);
+                await _repositoryWrapper.Players.SaveAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(player);
@@ -73,7 +74,8 @@ namespace PerfectHotel.Web.Controllers
                 return NotFound();
             }
 
-            var player = await _context.Players.FindAsync(id);
+            var players = await _repositoryWrapper.Players.FindByConditionAync(p => p.Id == id.Value);
+            var player = players.FirstOrDefault();
             if (player == null)
             {
                 return NotFound();
@@ -97,12 +99,12 @@ namespace PerfectHotel.Web.Controllers
             {
                 try
                 {
-                    _context.Update(player);
-                    await _context.SaveChangesAsync();
+                    _repositoryWrapper.Players.Update(player);
+                    await _repositoryWrapper.Players.SaveAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PlayerExists(player.Id))
+                    if (!await PlayerExists(player.Id))
                     {
                         return NotFound();
                     }
@@ -124,13 +126,12 @@ namespace PerfectHotel.Web.Controllers
                 return NotFound();
             }
 
-            var player = await _context.Players
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var players = await _repositoryWrapper.Players.FindByConditionAync(p => p.Id== id.Value);
+            var player = players.FirstOrDefault();
             if (player == null)
             {
                 return NotFound();
             }
-
             return View(player);
         }
 
@@ -139,15 +140,16 @@ namespace PerfectHotel.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var player = await _context.Players.FindAsync(id);
-            _context.Players.Remove(player);
-            await _context.SaveChangesAsync();
+            var player = await _repositoryWrapper.Players.FindByConditionAync(p => p.Id == id);
+            _repositoryWrapper.Players.Delete(player.FirstOrDefault());
+            await _repositoryWrapper.Players.SaveAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PlayerExists(int id)
+        private async Task<bool> PlayerExists(int id)
         {
-            return _context.Players.Any(e => e.Id == id);
+            var player = await _repositoryWrapper.Players.FindByConditionAync(p => p.Id == id);
+            return (null != player);
         }
     }
 }

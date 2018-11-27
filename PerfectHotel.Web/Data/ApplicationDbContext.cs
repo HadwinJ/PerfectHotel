@@ -88,7 +88,7 @@ namespace PerfectHotel.Web.Data
 
         private void OnBeforeSaving()
         {
-            var userName = _httpContextAccessor.HttpContext.User.Identity.Name;
+            var userName = _httpContextAccessor.HttpContext.User.Identity.Name ?? "Anonymous";
             var entries = ChangeTracker.Entries();
             foreach (var entry in entries)
             {

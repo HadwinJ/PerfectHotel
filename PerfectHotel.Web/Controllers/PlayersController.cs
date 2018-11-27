@@ -34,8 +34,7 @@ namespace PerfectHotel.Web.Controllers
                 return NotFound();
             }
 
-            var players = await _repositoryWrapper.Players.FindByConditionAync(p => p.Id == id.Value);
-            var player = players.FirstOrDefault();
+            var player = await _repositoryWrapper.Players.FindByIdAsync(id.Value);
             if (player == null)
             {
                 return NotFound();
@@ -74,8 +73,7 @@ namespace PerfectHotel.Web.Controllers
                 return NotFound();
             }
 
-            var players = await _repositoryWrapper.Players.FindByConditionAync(p => p.Id == id.Value);
-            var player = players.FirstOrDefault();
+            var player = await _repositoryWrapper.Players.FindByIdAsync(id.Value);
             if (player == null)
             {
                 return NotFound();
@@ -126,8 +124,7 @@ namespace PerfectHotel.Web.Controllers
                 return NotFound();
             }
 
-            var players = await _repositoryWrapper.Players.FindByConditionAync(p => p.Id== id.Value);
-            var player = players.FirstOrDefault();
+            var player = await _repositoryWrapper.Players.FindByIdAsync(id.Value);
             if (player == null)
             {
                 return NotFound();
@@ -140,15 +137,15 @@ namespace PerfectHotel.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var player = await _repositoryWrapper.Players.FindByConditionAync(p => p.Id == id);
-            _repositoryWrapper.Players.Delete(player.FirstOrDefault());
+            var player = await _repositoryWrapper.Players.FindByIdAsync(id);
+            _repositoryWrapper.Players.Delete(player);
             await _repositoryWrapper.Players.SaveAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private async Task<bool> PlayerExists(int id)
         {
-            var player = await _repositoryWrapper.Players.FindByConditionAync(p => p.Id == id);
+            var player = await _repositoryWrapper.Players.FindByIdAsync(id);
             return (null != player);
         }
     }

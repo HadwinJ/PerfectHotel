@@ -44,8 +44,8 @@ namespace PerfectHotel.Web.Data
                 var setGlobalQueryMethod = SetGlobalQueryMethod.MakeGenericMethod(entityType);
                 setGlobalQueryMethod.Invoke(this, new object[] {builder});
 
-                var addTrackingPropertiesMethod = AddTrackingPropertiesMethod.MakeGenericMethod(entityType);
-                addTrackingPropertiesMethod.Invoke(this, new object[] { builder });
+//                var addTrackingPropertiesMethod = AddTrackingPropertiesMethod.MakeGenericMethod(entityType);
+//                addTrackingPropertiesMethod.Invoke(this, new object[] { builder });
             }
 
             base.OnModelCreating(builder);
@@ -100,12 +100,14 @@ namespace PerfectHotel.Web.Data
                         case EntityState.Modified:
                             entry.CurrentValues["LastUpdatedAt"] = now;
                             entry.CurrentValues["LastUpdatedBy"] = userName;
+                            entry.CurrentValues["TenantId"] = _tenantId;
                             break;
                         case EntityState.Added:
                             entry.CurrentValues["CreatedAt"] = now;
                             entry.CurrentValues["CreatedBy"] = userName;
                             entry.CurrentValues["LastUpdatedAt"] = now;
                             entry.CurrentValues["LastUpdatedBy"] = userName;
+                            entry.CurrentValues["TenantId"] = _tenantId;
                             break;
                         case EntityState.Deleted:
                             entry.CurrentValues["LastUpdatedAt"] = now;

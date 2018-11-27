@@ -10,7 +10,8 @@ namespace PerfectHotel.Web.Repositories
     public interface IGenericAsyncRepository<T> where T: BaseEntity
     {
         Task<IEnumerable<T>> FindAllAsync();
-        Task<IEnumerable<T>> FindByConditionAync(Expression<Func<T, bool>> expression);
+        Task<IEnumerable<T>> FindByConditionAsync(Expression<Func<T, bool>> expression);
+        Task<T> FindByIdAsync(int id);
         void Create(T entity);
         void Update(T entity);
         void Delete(T entity);

@@ -22,9 +22,14 @@ namespace PerfectHotel.Web.Repositories
             return await _context.Set<T>().ToListAsync();            
         }
 
-        public async Task<IEnumerable<T>> FindByConditionAync(Expression<Func<T, bool>> expression)
+        public async Task<IEnumerable<T>> FindByConditionAsync(Expression<Func<T, bool>> expression)
         {
             return await _context.Set<T>().Where(expression).ToListAsync();            
+        }
+
+        public async Task<T> FindByIdAsync(int id)
+        {
+            return await _context.Set<T>().FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public void Create(T entity)
@@ -34,6 +39,14 @@ namespace PerfectHotel.Web.Repositories
 
         public void Update(T entity)
         {
+            T exist = _context.Set<T>().Find(entity.Id);
+            if (null != exist)
+            {
+                entity.CreatedBy = exist.CreatedBy;
+                entity.CreatedAt = exist.CreatedAt;
+
+                _context.Entry(exist).State = EntityState.Detached;
+            }            
             _context.Set<T>().Update(entity);
         }
 

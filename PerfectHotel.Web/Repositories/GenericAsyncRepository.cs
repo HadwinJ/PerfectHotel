@@ -5,10 +5,11 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PerfectHotel.Web.Data;
+using PerfectHotel.Web.Models;
 
 namespace PerfectHotel.Web.Repositories
 {
-    public class GenericAsyncRepository<T>: IGenericAsyncRepository<T> where T: class 
+    public class GenericAsyncRepository<T>: IGenericAsyncRepository<T> where T: BaseEntity 
     {
         private readonly ApplicationDbContext _context;
 

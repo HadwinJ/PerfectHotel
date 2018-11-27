@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using PerfectHotel.Web.Models;
 
 namespace PerfectHotel.Web.Repositories
 {
-    public interface IGenericAsyncRepository<T> where T: class 
+    public interface IGenericAsyncRepository<T> where T: BaseEntity
     {
         Task<IEnumerable<T>> FindAllAsync();
         Task<IEnumerable<T>> FindByConditionAync(Expression<Func<T, bool>> expression);

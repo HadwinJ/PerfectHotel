@@ -107,6 +107,12 @@ namespace PerfectHotel.Web.Data
                             entry.CurrentValues["LastUpdatedAt"] = now;
                             entry.CurrentValues["LastUpdatedBy"] = userName;
                             break;
+                        case EntityState.Deleted:
+                            entry.CurrentValues["LastUpdatedAt"] = now;
+                            entry.CurrentValues["LastUpdatedBy"] = userName;
+                            entry.CurrentValues["IsDeleted"] = true;
+                            entry.State = EntityState.Modified;
+                            break;
                         default:
                             break;
                     }
